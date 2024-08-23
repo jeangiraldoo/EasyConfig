@@ -32,12 +32,12 @@ def checkRecord(name, path):
     return False
 
 def add(args, parser):
-    if(args.software_name == "false"):
+    if(args.p and args.software_name == "false"):
         parser.error("The name of the software was not provided")
     elif(args.p and args.path_name == "false"):
         errorMessage = "The path was not provided"
         parser.error(errorMessage)
-    else:
+    elif(args.p and args.path_name != "false"):
         config = open("config.ec", "r")
         configContent = config.read()
         char_num = len(configContent)
@@ -52,6 +52,23 @@ def add(args, parser):
             config.write(f"[{configContent}]")
             print(f"{args.software_name}:{args.path_name} added")
 
+def list_(args):
+    if(args.command == "list" and args.p):
+
+        print("List of added paths:")
+        config = open("config.ec", "r")
+        configContent = config.read()
+        content_len = len(configContent)
+        configContent = configContent[1:(content_len - 1)]
+    
+        string_to_print = ""
+
+        for i in configContent:
+            if(not(i == ",")):
+                string_to_print += i 
+            elif(i == ","):
+                print(f"{string_to_print}\n")
+            
 createECFile()
 
 parser = ArgumentParser(prog = "EasyConfig", description = "Automates the process of managing and installing configuration files")
@@ -66,8 +83,9 @@ subparser_add.add_argument("software_name", nargs = "?", default = "false")
 subparser_add.add_argument("path_name", nargs = "?", default = "false")
 subparser_add.set_defaults(func = lambda args: add(args, subparser_add))
 
-#subparser_path = subparsers.add_parser("list", help = "Returns the configuration file paths stored")
-#subparser_path.set_defaults(func = list_)
+subparser_list = subparsers.add_parser("list", help = "Returns the configuration file paths stored")
+subparser_list.add_argument("-p", action = "store_true", default = False)
+subparser_list.set_defaults(func = list_)
 
 args = parser.parse_args() 
 
