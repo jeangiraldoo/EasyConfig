@@ -31,7 +31,7 @@ def checkRecord(name, path):
                 stuff = ""
     return False
 
-def create(args, parser):
+def add(args, parser):
     if(args.software_name == "false"):
         parser.error("The name of the software was not provided")
     elif(args.p and args.path_name == "false"):
@@ -60,11 +60,11 @@ subparsers = parser.add_subparsers(dest = "command")
 subparser_system = subparsers.add_parser("system", help = "Returns system-specific information")
 subparser_system.set_defaults(func = showSystemInfo)
 
-subparser_create = subparsers.add_parser("create", help = "Creates a configuration file or adds a path with the -p flag for future use")
-subparser_create.add_argument("-p", action = "store_true", default = False)
-subparser_create.add_argument("software_name", nargs = "?", default = "false")
-subparser_create.add_argument("path_name", nargs = "?", default = "false")
-subparser_create.set_defaults(func = lambda args: create(args, subparser_create))
+subparser_add = subparsers.add_parser("add", help = "Adds a path with the -p flag for future use")
+subparser_add.add_argument("-p", action = "store_true", default = False)
+subparser_add.add_argument("software_name", nargs = "?", default = "false")
+subparser_add.add_argument("path_name", nargs = "?", default = "false")
+subparser_add.set_defaults(func = lambda args: add(args, subparser_add))
 
 #subparser_path = subparsers.add_parser("list", help = "Returns the configuration file paths stored")
 #subparser_path.set_defaults(func = list_)
