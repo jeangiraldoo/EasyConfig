@@ -35,6 +35,8 @@ subparser_list = subparsers.add_parser("list", help = "Returns the configuration
 subparser_list.add_argument("-p", action = "store_true", default = False)
 subparser_list.set_defaults(func = commands.list_)
 
+subparser_remove = subparsers.add_parser("remove", help = "Removes the selected item from the system")
+
 args = parser.parse_args() 
 
 if hasattr(args, "func"):
