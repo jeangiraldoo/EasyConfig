@@ -9,14 +9,6 @@ def createECFile():
         config = open("config.ec", "w")
         config.write("[]")
 
-def showSystemInfo(args):
-    if(True):#Will be changed when system flags are added
-        operatingSystem = platform.system()
-        user = os.getlogin()
-        print(f"Operating system: {operatingSystem}")
-        print(f"User: {user}")
-
-
 createECFile()
 
 parser = ArgumentParser(prog = "EasyConfig", description = "Automates the process of managing and installing configuration files")

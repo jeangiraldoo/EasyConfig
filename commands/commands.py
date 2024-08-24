@@ -1,3 +1,11 @@
+def showSystemInfo(args):
+    if(True):#Will be changed when system flags are added
+        operatingSystem = platform.system()
+        user = os.getlogin()
+        print(f"Operating system: {operatingSystem}")
+        print(f"User: {user}")
+
+
 def list_(args):
     if(args.command == "list" and args.p):
 
