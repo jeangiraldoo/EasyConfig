@@ -1,3 +1,7 @@
+from config import manager
+import os
+import platform
+
 def showSystemInfo(args):
     if(True):#Will be changed when system flags are added
         operatingSystem = platform.system()
@@ -7,21 +11,20 @@ def showSystemInfo(args):
 
 
 def list_(args):
-    if(args.command == "list" and args.p):
-
         print("List of added paths:")
-        config = open("config.ec", "r")
-        configContent = config.read()
-        content_len = len(configContent)
-        configContent = configContent[1:(content_len - 1)]
-    
+        position = manager.getSettingPosition("Path = [")
+        line = manager.getSettingData(position, "Path = [")
+        lineLenght = len(line)
         string_to_print = ""
-
-        for i in configContent:
+        counter = 0
+        for i in line:
+            counter += 1
             if(not(i == ",")):
-                string_to_print += i 
-            elif(i == ","):
-                print(f"{string_to_print}\n")
+                string_to_print += i
+            if(i == ","):
+                print(string_to_print)
+                string_to_print = "" 
+        print(string_to_print)
 
 def add(args, parser):
     if(args.p and args.software_name == "false"):
@@ -30,34 +33,27 @@ def add(args, parser):
         errorMessage = "The path was not provided"
         parser.error(errorMessage)
     elif(args.p and args.path_name != "false"):
-        config = open("config.ec", "r")
-        configContent = config.read()
-        char_num = len(configContent)
-        configContent = configContent[1:(char_num - 1)]
         entryExists = checkRecord(args.software_name, args.path_name)
 
         if(entryExists):
             parser.error("The name or path has been added in the past")
         else:
-            configContent = f"{args.software_name}:{args.path_name},{configContent}"
-            config = open("config.ec","w")
-            config.write(f"[{configContent}]")
+            textToAdd = f"{args.software_name}:{args.path_name}"
+            manager.updateSetting("Path = [", textToAdd)
             print(f"{args.software_name}:{args.path_name} added")
 
 def checkRecord(name, path):
-    config = open("config.ec", "r")
-    configContent = config.read()
-    char_num = len(configContent)
-    configContent = configContent[1:(char_num - 1)]
-    
+    content = manager.readMainFile()
+    position = manager.getSettingPosition("Path = [")
+    line = manager.getSettingData(position, "Path = [")
     stuff = ""
-    for i in configContent:
-        if(not(i == ":" or i == ",")):
-            stuff += i
+    for k in line:
+        if(not(k == ":" or k == ",")):
+            stuff += k
         else:
             if(stuff == name or stuff == path):
                 return True
             else:
                 stuff = ""
+    
     return False
-

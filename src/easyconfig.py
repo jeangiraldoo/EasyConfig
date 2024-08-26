@@ -2,20 +2,15 @@ import platform
 import os 
 from argparse import ArgumentParser
 from commands import commands
+from config import manager
 
-
-def createECFile():
-    if(not(os.path.exists("config.ec"))):
-        config = open("config.ec", "w")
-        config.write("[]")
-
-createECFile()
+manager.createMainFile()
 
 parser = ArgumentParser(prog = "EasyConfig", description = "Automates the process of managing and installing configuration files")
 
 subparsers = parser.add_subparsers(dest = "command")
 subparser_system = subparsers.add_parser("system", help = "Returns system-specific information")
-subparser_system.set_defaults(func = showSystemInfo)
+subparser_system.set_defaults(func = commands.showSystemInfo)
 
 subparser_add = subparsers.add_parser("add", help = "Adds a path with the -p flag for future use")
 subparser_add.add_argument("-p", action = "store_true", default = False)
