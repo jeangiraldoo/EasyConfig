@@ -7,8 +7,10 @@ from config import manager
 manager.createMainFile()
 
 parser = ArgumentParser(prog = "EasyConfig", description = "Automates the process of managing and installing configuration files")
+parser.add_argument("-v", action = "store_true", default = False)
 
 subparsers = parser.add_subparsers(dest = "command")
+
 subparser_system = subparsers.add_parser("system", help = "Returns system-specific information")
 subparser_system.set_defaults(func = commands.showSystemInfo)
 
@@ -28,4 +30,6 @@ args = parser.parse_args()
 
 if hasattr(args, "func"):
     args.func(args)
+else:
+    commands.handle_arguments(args)
 

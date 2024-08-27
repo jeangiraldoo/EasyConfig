@@ -1,6 +1,11 @@
 from config import manager
 import os
 import platform
+from app_info import __version__
+
+def handle_arguments(args):
+    if(args.v):
+        print(f"EasyConfig {__version__}")
 
 def showSystemInfo(args):
     if(True):#Will be changed when system flags are added
