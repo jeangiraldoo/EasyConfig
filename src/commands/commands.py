@@ -7,6 +7,31 @@ def handle_arguments(args):
     if(args.v):
         print(f"EasyConfig {__version__}")
 
+def remove(args, parser):
+    if(args.p and args.software_name == "false" and args.path_name == "false"):
+        parser.error("The path and the software name were not specified")
+    elif(args.p and args.path_name == "false"):
+        parser.error("The path was not specified")
+    elif(args.p and args.software_name == "false"):
+        parser.error("The software name was not specified")
+
+    exists = manager.search_in_path(f"{args.software_name}:{args.path_name}")
+    if(exists):
+        settingPosition = manager.getSettingPosition("Path = [")
+        data = manager.getSettingData(settingPosition, "Path = [") 
+        total_characters = len(data)
+        positions = manager.get_position_in_path(f"{args.software_name}:{args.path_name}")
+        print(f"Position:{positions}")
+        start = positions[0]
+        finish = positions[1]
+        new_value = ""
+        for i in range(total_characters):
+            if(i < start or i > finish):
+                new_value += data[i]
+        manager.updateSetting("Path = [", new_value, "r")
+    else:
+        parser.error("The path specified does not exist")
+
 def showSystemInfo(args):
     if(True):#Will be changed when system flags are added
         operatingSystem = platform.system()
@@ -44,7 +69,7 @@ def add(args, parser):
             parser.error("The name or path has been added in the past")
         else:
             textToAdd = f"{args.software_name}:{args.path_name}"
-            manager.updateSetting("Path = [", textToAdd)
+            manager.updateSetting("Path = [", textToAdd, "a")
             print(f"{args.software_name}:{args.path_name} added")
 
 def checkRecord(name, path):

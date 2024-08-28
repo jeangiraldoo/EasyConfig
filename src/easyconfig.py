@@ -25,6 +25,11 @@ subparser_list.add_argument("-p", action = "store_true", default = False)
 subparser_list.set_defaults(func = commands.list_)
 
 subparser_remove = subparsers.add_parser("remove", help = "Removes the selected item from the system")
+subparser_remove.add_argument("-p", action = "store_true", default = False)
+subparser_remove.add_argument("software_name", nargs = "?", default = "false")
+subparser_remove.add_argument("path_name", nargs = "?", default = "false")
+subparser_remove.set_defaults(func = lambda args: commands.remove(args, subparser_remove))
+
 
 args = parser.parse_args() 
 
