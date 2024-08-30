@@ -1,128 +1,92 @@
 import os
+from app_info import config_file
 
-mainFile = "config.ec"
-
-
-def search_in_path(value):
-    path_position = getSettingPosition("Path = [")
-    print(path_position)
-    data = getSettingData(path_position, "Path = [")
-    lenght = len(data) - 1
-    print(f"Len: {lenght}")
-
-    value_in_path = ""
+def iterate_values(line: str, action: str, arg) -> str:
+    accumulator = ""
+    value = ""
+    line_lenght = len(line) - 1
+    arg_lenght = len(arg)
     counter = 0
-    for i in data:
-        if(not(i == ",")):
-            value_in_path += i
-        if(i == "," or counter == lenght):
-            if(value_in_path == value):
-                print(f"Value: {value_in_path}")
-                print(f"Len: {lenght}")
-                print(f"Counter: {counter}")
-                return True
-            else:
-                value_in_path = ""
-
+    for char in line:
+        if(not(char == ",")):
+            accumulator += char
+        if(char == "," or counter == line_lenght):
+            if(action == "list"):
+                value += f"{accumulator}\n"
+            elif(action == "search"):
+                if(accumulator == arg):
+                    value = "true"
+                    break
+            elif(action == "position"):
+                if(arg == accumulator):
+                    start = counter - arg_lenght
+                    value = f"{start},{counter}"
+                    break
+            if(True):
+                accumulator = ""
         counter += 1
-        print(value_in_path)
-
-    print(value_in_path) 
-    print(counter)
-    return False
-
-
-def get_position_in_path(value):
-    path_position = getSettingPosition("Path = [")
-    data = getSettingData(path_position, "Path = [")
-    lenght = len(data) - 1
-    value_lenght = len(value)
-    print("lenght siuu: " + str(lenght))
-
-    value_in_path = ""
-    start = 0
-    counter = 0
-    for i in data:
-        if(i != ","):
-            value_in_path += i
-        if(i == "," or counter == lenght):
-            if(value_in_path == value):
-                start = counter - value_lenght
-                print(f"counter: {counter}")
-                print(f"Lenght: {value_lenght}")
-                print(f"Start: {start}")
-                return [start, counter]
-            else:
-                value_in_path = ""
-        counter += 1
-
-
-
-def getSettingData(lineNumber, setting):
-    print(lineNumber)
-    content = readMainFile()
-    settingLenght = len(setting)
-    line = content[lineNumber]
-    contentLenght = len(line)
-    value = line[settingLenght:contentLenght - 1]
     return value
 
-def getSettingPosition(setting):
-    content = readMainFile()
-
+def get_setting_values(setting_name: str, option):
+    setting_lenght = len(setting_name) + 4 #4 is the amount of characters in " = ["
+    file_lines: list[str] = read_main_file()
     accumulator = ""
-    position = 0
-    for i in content:
-        position += 1
+    line_number = 0
+    setting_found = False
+
+    for i in file_lines:
         for j in i:
             accumulator += j
-            if(accumulator == setting):
-                print(position - 1)
-                return position - 1 
+            if(accumulator == setting_name):
+                setting_found = True 
+                break
+        if(not(setting_found)):
+            line_number += 1
 
-def searchSetting(setting):
-    content = readMainFile()
+    if(setting_found):
+        if(option == "position"):
+            return line_number
+        elif(option == "line"):
+            line = file_lines[line_number]
+            line_lenght = len(line)
+            line_value = line[setting_lenght:(line_lenght - 1)]
+            return line_value
+    else:
+        return "Not found"
 
-    if(len(content) == 0):
-        return False
+def update_setting(setting: str, modification: str, option):
+    file_lines = read_main_file()
+    setting_position = get_setting_values("Path", "position")
+    line = get_setting_values(setting, "line")
 
-    accumulator = ""
-    for position in content:
-        for string in content[position]:
-            accumulator += j
-            if(accumulator == setting):
-                return True
-
-def updateSetting(setting, modification, option):
-    content = readMainFile()
-    position = getSettingPosition(setting) 
-    line = getSettingData(position, setting)
     if(line == "" or option == "r"):
-        modifiedSetting = f"{setting}{modification}]"
+        modified_setting = f"{setting} = [{modification}]"
     elif(option == "a"):
-        modifiedSetting = f"{setting}{line},{modification}]" 
-    content[position] = modifiedSetting
-    file = open(mainFile, "w")
-    for i in content:
+        modified_setting = f"{setting} = [{line},{modification}]" 
+    file_lines[setting_position] = modified_setting
+
+    file = open(config_file, "w")
+    for i in file_lines:
         file.write(i)
 
-def createSetting(setting):
-    content = readMainFile()
-    totalLines = len(content)
-    content.append(setting)
+def create_setting(setting_name: str):
+    file_lines = read_main_file()
+    total_lines = len(file_lines)
+    setting_to_add = f"{setting_name} = []"
+    content.append(setting_to_add)
 
-    file = open(mainFile, "w")
-    for i in content:
+    file = open(config_file, "w")
+    for i in file_lines:
         file.write(i)
 
-def readMainFile():
-    file = open(mainFile, "r")
-    content = file.readlines()
+def read_main_file() -> list[str]:
+    file = open(config_file, "r")
+    file_lines = file.readlines()
 
-    return content
+    return file_lines
 
 #Create the configuration file for easyConfig
-def createMainFile():
-    if(not(os.path.exists(mainFile))):
-        open(mainFile, "w")
-        createSetting("Path = []")
+def create_main_file():
+    if(not(os.path.exists(config_file))):
+        open(config_file, "w")
+        create_setting("Path")

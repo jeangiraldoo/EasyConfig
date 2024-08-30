@@ -15,75 +15,57 @@ def remove(args, parser):
     elif(args.p and args.software_name == "false"):
         parser.error("The software name was not specified")
 
-    exists = manager.search_in_path(f"{args.software_name}:{args.path_name}")
-    if(exists):
-        settingPosition = manager.getSettingPosition("Path = [")
-        data = manager.getSettingData(settingPosition, "Path = [") 
-        total_characters = len(data)
-        positions = manager.get_position_in_path(f"{args.software_name}:{args.path_name}")
-        print(f"Position:{positions}")
-        start = positions[0]
-        finish = positions[1]
+    line = manager.get_setting_values("Path", "line")
+    exists = manager.iterate_values(line, "search", f"{args.software_name}:{args.path_name}")
+    if(exists == "true"):
+        total_characters = len(line)
+        position_start = ""
+        position_end = ""
+        positions = manager.iterate_values(line, "position", f"{args.software_name}:{args.path_name}")
+        counter = 0
+        comma_position = 0 #used to know where each position starts and end
+        for i in positions:
+            if(i == ","):
+                comma_position = counter 
+            counter += 1
+
+        start = int(positions[:comma_position])
+        end = int(positions[comma_position + 1:])
         new_value = ""
         for i in range(total_characters):
-            if(i < start or i > finish):
-                new_value += data[i]
-        manager.updateSetting("Path = [", new_value, "r")
+            if(i < start or i > end):
+                new_value += line[i]
+        manager.update_setting("Path", new_value, "r")
     else:
         parser.error("The path specified does not exist")
 
-def showSystemInfo(args):
+def show_system_info(args):
     if(True):#Will be changed when system flags are added
-        operatingSystem = platform.system()
+        operating_system = platform.system()
         user = os.getlogin()
-        print(f"Operating system: {operatingSystem}")
+        print(f"Operating system: {operating_system}")
         print(f"User: {user}")
-
 
 def list_(args):
         print("List of added paths:")
-        position = manager.getSettingPosition("Path = [")
-        line = manager.getSettingData(position, "Path = [")
-        lineLenght = len(line)
+        line = manager.get_setting_values("Path", "line")
+        line_lenght = len(line)
         string_to_print = ""
-        counter = 0
-        for i in line:
-            counter += 1
-            if(not(i == ",")):
-                string_to_print += i
-            if(i == ","):
-                print(string_to_print)
-                string_to_print = "" 
-        print(string_to_print)
+        list_value = manager.iterate_values(line, "list", "")
+        print(list_value)
 
 def add(args, parser):
     if(args.p and args.software_name == "false"):
         parser.error("The name of the software was not provided")
     elif(args.p and args.path_name == "false"):
-        errorMessage = "The path was not provided"
-        parser.error(errorMessage)
-    elif(args.p and args.path_name != "false"):
-        entryExists = checkRecord(args.software_name, args.path_name)
+        parser.error("The path was not provided")
+    elif(args.p and args.path_name != "false" and args.software_name != "false"):
+        line = manager.get_setting_values("Path", "line")
+        text_to_add = f"{args.software_name}:{args.path_name}"
+        entry_exists: str = manager.iterate_values(line, "search", text_to_add)
 
-        if(entryExists):
+        if(entry_exists == "true"):
             parser.error("The name or path has been added in the past")
         else:
-            textToAdd = f"{args.software_name}:{args.path_name}"
-            manager.updateSetting("Path = [", textToAdd, "a")
-            print(f"{args.software_name}:{args.path_name} added")
-
-def checkRecord(name, path):
-    content = manager.readMainFile()
-    position = manager.getSettingPosition("Path = [")
-    line = manager.getSettingData(position, "Path = [")
-    stuff = ""
-    for k in line:
-        if(not(k == ":" or k == ",")):
-            stuff += k
-        else:
-            if(stuff == name or stuff == path):
-                return True
-            else:
-                stuff = ""
-    
-    return False
+            manager.update_setting("Path", text_to_add, "a")
+            print(f"{text_to_add} added")

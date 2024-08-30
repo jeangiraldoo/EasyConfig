@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 from commands import commands
 from config import manager
 
-manager.createMainFile()
+manager.create_main_file()
 
 parser = ArgumentParser(prog = "EasyConfig", description = "Automates the process of managing and installing configuration files")
 parser.add_argument("-v", action = "store_true", default = False)
@@ -12,7 +12,7 @@ parser.add_argument("-v", action = "store_true", default = False)
 subparsers = parser.add_subparsers(dest = "command")
 
 subparser_system = subparsers.add_parser("system", help = "Returns system-specific information")
-subparser_system.set_defaults(func = commands.showSystemInfo)
+subparser_system.set_defaults(func = commands.show_system_info)
 
 subparser_add = subparsers.add_parser("add", help = "Adds a path with the -p flag for future use")
 subparser_add.add_argument("-p", action = "store_true", default = False)
