@@ -4,10 +4,12 @@ import platform
 from app_info import __version__
 
 def handle_arguments(args):
+    """Process optional flags used when running easyConfig"""
     if(args.v):
         print(f"EasyConfig {__version__}")
 
 def remove(args, parser):
+    """Remove a chosen item from the configuration file"""
     if(args.p and args.software_name == "false" and args.path_name == "false"):
         parser.error("The path and the software name were not specified")
     elif(args.p and args.path_name == "false"):
@@ -47,14 +49,17 @@ def show_system_info(args):
         print(f"User: {user}")
 
 def list_(args):
-        print("List of added paths:")
-        line = manager.get_setting_values("Path", "line")
-        line_lenght = len(line)
-        string_to_print = ""
-        list_value = manager.iterate_values(line, "list", "")
-        print(list_value)
+    """List the paths that are in the "Path" setting in the configuration file"""
+
+    print("List of added paths:")
+    line = manager.get_setting_values("Path", "line")
+    line_lenght = len(line)
+    string_to_print = ""
+    list_value = manager.iterate_values(line, "list", "")
+    print(list_value)
 
 def add(args, parser):
+    """Add a software_name/path pair to the "Path" setting in the configuration file"""
     if(args.p and args.software_name == "false"):
         parser.error("The name of the software was not provided")
     elif(args.p and args.path_name == "false"):
