@@ -1,5 +1,3 @@
-import platform 
-import os 
 from argparse import ArgumentParser
 from commands import commands
 from config import manager
