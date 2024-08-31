@@ -9,7 +9,7 @@ def getSystemUser():
     user = os.getlogin()
     return user
 
-__version__ = "0.1.2"
+__version__ = "0.2.2"
 os_name = getOperatingSystem()
 os_user = getSystemUser()
 config_file = "config.ec"
