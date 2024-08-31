@@ -1,7 +1,7 @@
 from config import manager
 import os
 import platform
-from app_info import __version__
+from app_info import __version__, os_name, os_user
 
 def handle_arguments(args):
     """Process optional flags used when running easyConfig"""
@@ -42,11 +42,8 @@ def remove(args, parser):
         parser.error("The path specified does not exist")
 
 def show_system_info(args):
-    if(True):#Will be changed when system flags are added
-        operating_system = platform.system()
-        user = os.getlogin()
-        print(f"Operating system: {operating_system}")
-        print(f"User: {user}")
+    print(f"Operating system: {os_name}")
+    print(f"User: {os_user}")
 
 def list_(args):
     """List the paths that are in the "Path" setting in the configuration file"""
