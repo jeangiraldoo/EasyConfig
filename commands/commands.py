@@ -1,6 +1,6 @@
-from config import manager
 import os
 import platform
+from config import manager
 from app_info import __version__, os_name, os_user
 
 def handle_arguments(args):
@@ -38,6 +38,7 @@ def remove(args, parser):
             if(i < start or i > end):
                 new_value += line[i]
         manager.update_setting("Path", new_value, "r")
+        print(f"{args.software_name}:{args.path_name} removed succesfully!")
     else:
         parser.error("The path specified does not exist")
 
