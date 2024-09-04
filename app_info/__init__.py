@@ -14,7 +14,7 @@ def get_config_directory():
         path = f"C:/Users/{os_user}/AppData/Local/easyConfig"
     return path
 
-__version__ = "0.2.2"
+__version__ = "0.3.2"
 os_name = get_operating_system()
 os_user = get_system_user()
 config_file = "config.ec"
