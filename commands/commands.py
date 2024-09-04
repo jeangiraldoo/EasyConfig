@@ -1,12 +1,21 @@
 import os
 import platform
 from config import manager
-from app_info import __version__, os_name, os_user
+from app_info import __version__, os_name, os_user, default_paths
 
 def handle_arguments(args):
     """Process optional flags used when running easyConfig"""
     if(args.v):
         print(f"EasyConfig {__version__}")
+
+def install(args, parser):
+    """Install configuration files in the directory where the corresponding application expects to find them"""
+    try:
+        app_path = default_paths[args.app_name]
+    except KeyError:
+        parser.error("The specified app has not been added to the path list")
+
+    os.system(f"move {args.file_name} {app_path}")
 
 def remove(args, parser):
     """Remove a chosen item from the configuration file"""

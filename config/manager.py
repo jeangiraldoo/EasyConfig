@@ -38,6 +38,7 @@ def iterate_values(line: str, action: str, arg) -> str:
         counter += 1
     return value
 
+
 def get_setting_values(setting_name: str, option: str):
     """Returns either the line number where a setting is located in the configuration file or the values the setting contains
 

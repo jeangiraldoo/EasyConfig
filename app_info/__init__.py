@@ -20,3 +20,7 @@ os_user = get_system_user()
 config_file = "config.ec"
 user_directory = get_config_directory()
 config_path = f"{user_directory}/{config_file}" 
+
+default_paths = {"easyConfig":f"{user_directory}", "neovim":f"C:/Users/{os_user}/AppData/Local/nvim"}
+
+
