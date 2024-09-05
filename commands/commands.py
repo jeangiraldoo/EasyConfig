@@ -57,16 +57,19 @@ def show_system_info(args):
 
 def list_(args):
     """List the paths that are in the "Path" setting in the configuration file"""
-
-    line = manager.get_setting_values("Path", "line")
-    line_lenght = len(line)
-    string_to_print = ""
-    list_value = manager.iterate_values(line, "list", "")
-    if(list_value == ""):
-        print("There's no user-defined paths in the configuration file.\nUse the 'add' command with the '-p' flag to create one, or use the built-in default paths.")
+    if(args.d):
+        default_paths = easyConfig.get_default_paths()
+        print(default_paths)
     else:
-        print("List of added paths:")
-        print(list_value)
+        line = manager.get_setting_values("Path", "line")
+        line_lenght = len(line)
+        string_to_print = ""
+        list_value = manager.iterate_values(line, "list", "")
+        if(list_value == ""):
+            print("There's no user-defined paths in the configuration file.\nUse the 'add' command with the '-p' flag to create one, or use the built-in default paths.")
+        else:
+            print("List of added paths:")
+            print(list_value)
 
 def add(args, parser):
     """Add a software_name/path pair to the "Path" setting in the configuration file"""

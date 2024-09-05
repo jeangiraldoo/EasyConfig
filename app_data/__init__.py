@@ -15,5 +15,10 @@ class easyConfig:
             self.default_paths = {"easyConfig":f"{self.config_directory}", "neovim":f"C:/Users/{self.user}/AppData/Local/nvim"}
         self.config_path = f"{self.config_directory}/{self.config_name}"
 
+    def get_default_paths(self):
+        paths = ""
+        for i in self.default_paths:
+            paths += f"{i} -> {self.default_paths[i]}\n"
+        return paths
 easyConfig = easyConfig()
 
