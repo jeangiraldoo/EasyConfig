@@ -13,7 +13,7 @@ subparser_system = subparsers.add_parser("system", help = "Returns system-specif
 subparser_system.set_defaults(func = commands.show_system_info)
 
 subparser_add = subparsers.add_parser("add", help = "Adds a path with the -p flag for future use")
-subparser_add.add_argument("-p", action = "store_true", default = False)
+subparser_add.add_argument("-p", required = True, action = "store_true", default = False)
 subparser_add.add_argument("software_name", nargs = "?", default = "false")
 subparser_add.add_argument("path_name", nargs = "?", default = "false")
 subparser_add.set_defaults(func = lambda args: commands.add(args, subparser_add))
