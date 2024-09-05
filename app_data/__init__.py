@@ -2,7 +2,7 @@ import os
 import platform
 
 class easyConfig:
-    version = "0.3.2"
+    version = "0.4.2"
     config_name = "config.ec"
 
     def __init__(self):
