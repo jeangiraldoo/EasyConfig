@@ -1,5 +1,5 @@
 import os
-from app_info import config_file, user_directory, config_path
+from app_data import easyConfig
 
 def iterate_values(line: str, action: str, arg) -> str:
     """Iterate through a setting's values (a line) and returns a value based on the provided action
@@ -91,7 +91,7 @@ def update_setting(setting_name: str, modification: str, option):
         modified_setting = f"{setting_name} = [{line},{modification}]" 
     file_lines[setting_position] = modified_setting
 
-    file = open(config_path, "w")
+    file = open(easyConfig.config_path, "w")
     for i in file_lines:
         file.write(i)
 
@@ -106,7 +106,7 @@ def create_setting(setting_name: str):
     setting_to_add = f"{setting_name} = []"
     file_lines.append(setting_to_add)
 
-    file = open(config_path, "w")
+    file = open(easyConfig.config_path, "w")
     for i in file_lines:
         file.write(i)
 
@@ -116,14 +116,14 @@ def read_main_file() -> list[str]:
     Returns:
     list of str: Each element of the list is a line in the configuration file
     """
-    file = open(config_path, "r")
+    file = open(easyConfig.config_path, "r")
     file_lines = file.readlines()
     return file_lines
 
 def create_main_file():
     """Create the configuration file that easyConfig will use"""
-    if(not(os.path.exists(user_directory))):
-        os.makedirs(user_directory) 
-    if(not(os.path.exists(config_path))):
-        open(config_path, "w")
+    if(not(os.path.exists(easyConfig.config_directory))):
+        os.makedirs(easyConfig.config_directory) 
+    if(not(os.path.exists(easyConfig.config_path))):
+        open(easyConfig.config_path, "w")
         create_setting("Path")
