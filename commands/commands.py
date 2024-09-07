@@ -26,7 +26,7 @@ def remove(args, parser):
     elif(args.p and args.software_name == "false"):
         parser.error("The software name was not specified")
 
-    line = manager.get_setting_values("Path", "line")
+    line = manager.iterate_settings("Path", "line")
     exists = manager.iterate_values(line, "search", f"{args.software_name}:{args.path_name}")
     if(exists == "true"):
         total_characters = len(line)
@@ -61,7 +61,7 @@ def list_(args):
         default_paths = easyConfig.get_default_paths()
         print(default_paths)
     else:
-        line = manager.get_setting_values("Path", "line")
+        line = manager.iterate_settings("Path", "line")
         line_lenght = len(line)
         string_to_print = ""
         list_value = manager.iterate_values(line, "list", "")
@@ -78,7 +78,7 @@ def add(args, parser):
     elif(args.p and args.path_name == "false"):
         parser.error("The path was not provided")
     elif(args.p and args.path_name != "false" and args.software_name != "false"):
-        line = manager.get_setting_values("Path", "line")
+        line = manager.iterate_settings("Path", "line")
         text_to_add = f"{args.software_name}:{args.path_name}"
         entry_exists: str = manager.iterate_values(line, "search", text_to_add)
 

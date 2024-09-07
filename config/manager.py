@@ -39,7 +39,7 @@ def iterate_values(line: str, action: str, arg) -> str:
     return value
 
 
-def get_setting_values(setting_name: str, option: str):
+def iterate_settings(setting_name: str, option: str):
     """Returns either the line number where a setting is located in the configuration file or the values the setting contains
 
     Parameters:
@@ -82,8 +82,8 @@ def update_setting(setting_name: str, modification: str, option):
     option(str): Determines what procedure will be used to apply the modification to the existing setting
     """
     file_lines = read_main_file()
-    setting_position = get_setting_values(setting_name, "position")
-    line = get_setting_values(setting_name, "line")
+    setting_position = iterate_settings(setting_name, "position")
+    line = iterate_settings(setting_name, "line")
 
     if(line == "" or option == "r"):
         modified_setting = f"{setting_name} = [{modification}]"
