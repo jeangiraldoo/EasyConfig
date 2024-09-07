@@ -27,14 +27,14 @@ def remove(args, parser):
         parser.error("The software name was not specified")
 
     line = manager.iterate_settings("Path", "line")
-    exists = manager.iterate_values(line, "search", f"{args.software_name}:{args.path_name}")
+    exists = manager.iterate_values(line, "search", f"{args.software_name}->{args.path_name}")
     if(exists != "true"):
         parser.error("The path specified does not exist")
 
     total_characters = len(line)
     position_start = ""
     position_end = ""
-    positions = manager.iterate_values(line, "position", f"{args.software_name}:{args.path_name}")
+    positions = manager.iterate_values(line, "position", f"{args.software_name}->{args.path_name}")
     counter = 0
     comma_position = 0 #used to know where each position starts and end
     for i in positions:
