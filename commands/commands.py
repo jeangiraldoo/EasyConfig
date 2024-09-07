@@ -28,38 +28,36 @@ def remove(args, parser):
 
     line = manager.iterate_settings("Path", "line")
     exists = manager.iterate_values(line, "search", f"{args.software_name}:{args.path_name}")
-    if(exists == "true"):
-        total_characters = len(line)
-        position_start = ""
-        position_end = ""
-        positions = manager.iterate_values(line, "position", f"{args.software_name}:{args.path_name}")
-        counter = 0
-        comma_position = 0 #used to know where each position starts and end
-        for i in positions:
-            if(i == ","):
-                comma_position = counter 
-            counter += 1
-
-        start = int(positions[:comma_position])
-        end = int(positions[comma_position + 1:])
-        new_value = ""
-        for i in range(total_characters):
-            if(i < start or i > end):
-                new_value += line[i]
-        manager.update_setting("Path", new_value, "r")
-        print(f"{args.software_name}:{args.path_name} removed succesfully!")
-    else:
+    if(exists != "true"):
         parser.error("The path specified does not exist")
 
+    total_characters = len(line)
+    position_start = ""
+    position_end = ""
+    positions = manager.iterate_values(line, "position", f"{args.software_name}:{args.path_name}")
+    counter = 0
+    comma_position = 0 #used to know where each position starts and end
+    for i in positions:
+        if(i == ","):
+            comma_position = counter 
+        counter += 1
+
+    start = int(positions[:comma_position])
+    end = int(positions[comma_position + 1:])
+    new_value = ""
+    for i in range(total_characters):
+        if(i < start or i > end):
+            new_value += line[i]
+    manager.update_setting("Path", new_value, "r")
+    print(f"{args.software_name}:{args.path_name} removed succesfully!")
+
 def show_system_info(args):
-    print(f"Operating system: {easyConfig.os_name}")
-    print(f"User: {easyConfig.user}")
+    print(f"Operating system: {easyConfig.os_name}\nUser: {easyConfig.user}")
 
 def list_(args):
     """List the paths that are in the "Path" setting in the configuration file"""
     if(args.d):
-        default_paths = easyConfig.get_default_paths()
-        print(default_paths)
+        print(easyConfig.get_default_paths())
     else:
         line = manager.iterate_settings("Path", "line")
         line_lenght = len(line)
@@ -85,6 +83,6 @@ def add(args, parser):
 
     if(entry_exists == "true"):
         parser.error("The name or path has been added in the past")
-    else:
-        manager.update_setting("Path", text_to_add, "a")
-        print(f"{text_to_add} added")
+
+    manager.update_setting("Path", text_to_add, "a")
+    print(f"{text_to_add} added")
