@@ -68,22 +68,23 @@ def list_(args):
         if(list_value == ""):
             print("There's no user-defined paths in the configuration file.\nUse the 'add' command with the '-p' flag to create one, or use the built-in default paths.")
         else:
-            print("List of added paths:")
-            print(list_value)
+            print(f"List of added paths:\n{list_value}")
 
 def add(args, parser):
     """Add a software_name/path pair to the "Path" setting in the configuration file"""
     if(args.p and args.software_name == "false"):
         parser.error("The name of the software was not provided")
-    elif(args.p and args.path_name == "false"):
+    if(args.p and args.path_name == "false"):
         parser.error("The path was not provided")
-    elif(args.p and args.path_name != "false" and args.software_name != "false"):
-        line = manager.iterate_settings("Path", "line")
-        text_to_add = f"{args.software_name}:{args.path_name}"
-        entry_exists: str = manager.iterate_values(line, "search", text_to_add)
+    if(not(manager.verify_path_exists(args.path_name))):
+        parser.error("The specified path is not a valid path or does not exist in this computer")
+        
+    line = manager.iterate_settings("Path", "line")
+    text_to_add = f"{args.software_name}->{args.path_name}"
+    entry_exists: str = manager.iterate_values(line, "search", text_to_add)
 
-        if(entry_exists == "true"):
-            parser.error("The name or path has been added in the past")
-        else:
-            manager.update_setting("Path", text_to_add, "a")
-            print(f"{text_to_add} added")
+    if(entry_exists == "true"):
+        parser.error("The name or path has been added in the past")
+    else:
+        manager.update_setting("Path", text_to_add, "a")
+        print(f"{text_to_add} added")

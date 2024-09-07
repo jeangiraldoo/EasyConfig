@@ -14,8 +14,8 @@ subparser_system.set_defaults(func = commands.show_system_info)
 
 subparser_add = subparsers.add_parser("add", help = "add a path to the configuration file")
 subparser_add.add_argument("-p", required = True, action = "store_true", help = "show the User-defined paths", default = False)
-subparser_add.add_argument("software_name", nargs = "?", default = "false")
-subparser_add.add_argument("path_name", nargs = "?", default = "false")
+subparser_add.add_argument("software_name", type = str, nargs = "?", default = "false")
+subparser_add.add_argument("path_name", type = str, nargs = "?", default = "false")
 subparser_add.set_defaults(func = lambda args: commands.add(args, subparser_add))
 
 subparser_list = subparsers.add_parser("list", help = "show the user-defined paths stored")

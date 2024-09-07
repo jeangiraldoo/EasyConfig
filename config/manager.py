@@ -110,6 +110,11 @@ def create_setting(setting_name: str):
     for i in file_lines:
         file.write(i)
 
+def verify_path_exists(path) -> bool:
+    if(os.path.exists(path)):
+        return True 
+    return False
+
 def read_main_file() -> list[str]:
     """Read and return the content stored in the local configuration file
 
@@ -122,8 +127,8 @@ def read_main_file() -> list[str]:
 
 def create_main_file():
     """Create the configuration file that easyConfig will use"""
-    if(not(os.path.exists(easyConfig.config_directory))):
+    if(not(verify_path_exists(easyConfig.config_directory))):
         os.makedirs(easyConfig.config_directory) 
-    if(not(os.path.exists(easyConfig.config_path))):
+    if(not(verify_path_exists(easyConfig.config_path))):
         open(easyConfig.config_path, "w")
         create_setting("Path")
