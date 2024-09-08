@@ -19,25 +19,25 @@ def iterate_values(line: str, action: str, arg) -> str:
     arg_lenght = len(arg)
     counter = 0
     for char in line:
-        if(not(char == ",")):
+        if(not(char == ",") and counter < line_lenght):
             accumulator += char
-        if(char == "," or counter == line_lenght):
-            if(action == "list"):
-                value += f"{accumulator}\n"
-            elif(action == "search"):
-                if(accumulator == arg):
-                    value = "true"
-                    break
-            elif(action == "position"):
-                if(arg == accumulator):
-                    start = counter - arg_lenght
-                    value = f"{start},{counter}"
-                    break
-            if(True):
-                accumulator = ""
+            counter += 1
+            continue
+        elif(counter == line_lenght):
+            accumulator += char
+
+        if(action == "list"):
+            value += f"{accumulator}\n"
+        elif(action == "search" and accumulator == arg):
+            value = "true"
+            break
+        elif(action == "position" and arg == accumulator):
+            start = counter - arg_lenght
+            value = f"{start},{counter}"
+            break
+        accumulator = ""
         counter += 1
     return value
-
 
 def iterate_settings(setting_name: str, option: str):
     """Returns either the line number where a setting is located in the configuration file or the values the setting contains
@@ -53,25 +53,25 @@ def iterate_settings(setting_name: str, option: str):
     line_number = 0
     setting_found = False
 
-    for i in file_lines:
-        for j in i:
-            accumulator += j
+    for line in file_lines:
+        for char in line:
+            accumulator += char
             if(accumulator == setting_name):
                 setting_found = True 
                 break
         if(not(setting_found)):
             line_number += 1
 
-    if(setting_found):
-        if(option == "position"):
-            return line_number
-        elif(option == "line"):
-            line = file_lines[line_number]
-            line_lenght = len(line)
-            line_value = line[setting_lenght:(line_lenght - 1)]
-            return line_value
-    else:
+    if(not(setting_found)):
         return "Not found"
+
+    if(option == "position"):
+        return line_number
+    elif(option == "line"):
+        line = file_lines[line_number]
+        line_lenght = len(line)
+        line_value = line[setting_lenght:(line_lenght - 1)]
+        return line_value
 
 def update_setting(setting_name: str, modification: str, option):
     """Modify an existing setting within the configuration file
