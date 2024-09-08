@@ -77,6 +77,15 @@ def add(args, parser):
     if(not(manager.verify_path_exists(args.path_name))):
         parser.error("The specified path is not a valid path or does not exist in this computer")
         
+    #Validates if the name or path is already in the default paths
+    default_paths = easyConfig.default_paths
+    for item in default_paths:
+        if(default_paths[item] == args.path_name):
+            parser.error(f"This path is already in use in the default paths ({item} -> {default_paths[item]})")
+        elif(item == args.software_name):
+            parser.error(f"This name is already in use in the default paths ({item} -> {default_paths[item]})")
+    
+    #Validates if the name or path is alrady in the config file
     line = manager.iterate_settings("Path", "line")
     text_to_add = f"{args.software_name}->{args.path_name}"
     entry_exists: str = manager.iterate_values(line, "search", text_to_add)
