@@ -49,7 +49,7 @@ def remove(args, parser):
         if(i < start or i > end):
             new_value += line[i]
     manager.update_setting("Path", new_value, "r")
-    print(f"{args.software_name}:{args.path_name} removed succesfully!")
+    print(f"{args.software_name} -> {args.path_name} removed succesfully!")
 
 def show_system_info(args):
     print(f"Operating system: {easyConfig.os_name}\nUser: {easyConfig.user}")

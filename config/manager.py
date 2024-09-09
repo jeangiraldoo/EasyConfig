@@ -13,6 +13,10 @@ def iterate_values(line: str, action: str, arg) -> str:
     -------
     str: The return value will always be string, it's content will depend on what string was used for the action parameter
     """
+    values = get_line_section_values(arg)
+    prov_name = values[0]
+    prov_path = values[1]
+
     accumulator = ""
     value = ""
     line_lenght = len(line) - 1
@@ -25,19 +29,38 @@ def iterate_values(line: str, action: str, arg) -> str:
             continue
         elif(counter == line_lenght):
             accumulator += char
-
+        
+        values_found = get_line_section_values(accumulator)
+        value_name = values_found[0]
+        value_path = values_found[1]
         if(action == "list"):
-            value += f"{accumulator}\n"
-        elif(action == "search" and accumulator == arg):
-            value = "true"
-            break
-        elif(action == "position" and arg == accumulator):
+            value += f"{value_name} -> {value_path}\n"
+        elif(action == "search"):
+            if(value_name == prov_name or value_path == prov_path):
+                value = "true"
+                break
+        elif(action == "position" and (value_name == prov_name or value_path == prov_path)):
             start = counter - arg_lenght
             value = f"{start},{counter}"
             break
         accumulator = ""
         counter += 1
     return value
+    
+
+def get_line_section_values(value):
+    separator = "->"
+    separator_pos_start = value.find(separator)
+    separator_pos_end = separator_pos_start + len(separator)
+    prov_name = value[:separator_pos_start]
+    prov_path = value[separator_pos_end:]
+    counter = 1
+    for i in prov_name:
+        if(i == " "):
+            prov_name = prov_name[counter:]
+        counter += 1
+    return [prov_name, prov_path]
+
 
 def iterate_settings(setting_name: str, option: str):
     """Returns either the line number where a setting is located in the configuration file or the values the setting contains
@@ -132,3 +155,5 @@ def create_main_file():
     if(not(verify_path_exists(easyConfig.config_path))):
         open(easyConfig.config_path, "w")
         create_setting("Path")
+
+#print(iterate("jaja->C:baba, mama->C:Users, tara->C:Documents", "list", ""))
