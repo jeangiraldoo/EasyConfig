@@ -31,6 +31,7 @@ subparser_remove.set_defaults(func = lambda args: commands.remove(args, subparse
 subparser_install = subparsers.add_parser("install", help = "move a config file to the path where it will be recognized by its app")
 subparser_install.add_argument("file_name", default = "false")
 subparser_install.add_argument("app_name", default = "false")
+subparser_install.add_argument("path_name", default = "false")
 subparser_install.set_defaults(func = lambda args:commands.install(args, subparser_install)) 
 
 args = parser.parse_args() 
