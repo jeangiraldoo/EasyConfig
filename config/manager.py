@@ -33,6 +33,7 @@ def iterate_values(line: str, action: str, arg) -> str:
         values_found = get_line_section_values(accumulator)
         value_name = values_found[0]
         value_path = values_found[1]
+
         if(action == "list"):
             value += f"{value_name} -> {value_path}\n"
         elif(action == "search"):
@@ -43,6 +44,9 @@ def iterate_values(line: str, action: str, arg) -> str:
             start = counter - arg_lenght
             value = f"{start},{counter}"
             break
+        elif(action == "value" and prov_name == value_name):
+            value = value_path
+            break
         accumulator = ""
         counter += 1
     return value
@@ -51,6 +55,9 @@ def iterate_values(line: str, action: str, arg) -> str:
 def get_line_section_values(value):
     separator = "->"
     separator_pos_start = value.find(separator)
+    if(separator_pos_start == -1):
+        return [value, ""]
+
     separator_pos_end = separator_pos_start + len(separator)
     prov_name = value[:separator_pos_start]
     prov_path = value[separator_pos_end:]
@@ -156,4 +163,4 @@ def create_main_file():
         open(easyConfig.config_path, "w")
         create_setting("Path")
 
-#print(iterate("jaja->C:baba, mama->C:Users, tara->C:Documents", "list", ""))
+#print(iterate_values("jaja->C:baba, mama->C:Users, tara->C:Documents", "value", "jaja"))

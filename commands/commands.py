@@ -10,9 +10,6 @@ def handle_arguments(args):
 
 def install(args, parser):
     """Install configuration files in the directory where the corresponding application expects to find them"""
-    print(args.app_name)
-    print(args.path_name)
-    print(args.file_name)
     try:
         app_path = easyConfig.default_paths[args.app_name]
     except KeyError:
@@ -20,9 +17,9 @@ def install(args, parser):
         exists = manager.iterate_values(line, "search", f"{args.app_name}->{args.path_name}")
         if(exists != "true"):
             parser.error("The specified app is not in the default paths and has not been added to the path list")
-        
-    os.system(f"move {args.file_name} {args.path_name}")
-    print(f"{args.file_name} moved to {args.path_name}")
+        value = manager.iterate_values(line, "value", f"{args.app_name}")
+    os.system(f"move {args.file_name} {value}")
+    print(f"{args.file_name} moved to {value}")
 
 def remove(args, parser):
     """Remove a chosen item from the configuration file"""
