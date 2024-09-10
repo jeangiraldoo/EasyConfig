@@ -25,13 +25,11 @@ subparser_list.set_defaults(func = commands.list_)
 subparser_remove = subparsers.add_parser("remove", help = "remove the selected item from the system")
 subparser_remove.add_argument("-p", action = "store_true", help = "removes a User-defined path from the configuration file", default = False)
 subparser_remove.add_argument("software_name", nargs = "?", default = "false")
-subparser_remove.add_argument("path_name", nargs = "?", default = "false")
 subparser_remove.set_defaults(func = lambda args: commands.remove(args, subparser_remove))
 
 subparser_install = subparsers.add_parser("install", help = "move a config file to the path where it will be recognized by its app")
 subparser_install.add_argument("file_name", default = "false")
 subparser_install.add_argument("app_name", default = "false")
-subparser_install.add_argument("path_name", default = "false")
 subparser_install.set_defaults(func = lambda args:commands.install(args, subparser_install)) 
 
 args = parser.parse_args() 

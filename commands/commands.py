@@ -14,31 +14,30 @@ def install(args, parser):
         app_path = easyConfig.default_paths[args.app_name]
     except KeyError:
         line = manager.iterate_settings("Path", "line")
-        exists = manager.iterate_values(line, "search", f"{args.app_name}->{args.path_name}")
-        if(exists != "true"):
-            parser.error("The specified app is not in the default paths and has not been added to the path list")
         value = manager.iterate_values(line, "value", f"{args.app_name}")
+        if(value == ""):
+            parser.error("The specified app is not in the default paths and has not been added to the path list")
+
     os.system(f"move {args.file_name} {value}")
     print(f"{args.file_name} moved to {value}")
 
 def remove(args, parser):
     """Remove a chosen item from the configuration file"""
-    if(args.p and args.software_name == "false" and args.path_name == "false"):
+    if(args.p and args.software_name == "false"):
         parser.error("The path and the software name were not specified")
-    elif(args.p and args.path_name == "false"):
-        parser.error("The path was not specified")
     elif(args.p and args.software_name == "false"):
         parser.error("The software name was not specified")
 
     line = manager.iterate_settings("Path", "line")
-    exists = manager.iterate_values(line, "search", f"{args.software_name}->{args.path_name}")
-    if(exists != "true"):
-        parser.error("The path specified does not exist")
+    #exists = manager.iterate_values(line, "search", f"{args.software_name}->{args.path_name}")
 
     total_characters = len(line)
     position_start = ""
     position_end = ""
-    positions = manager.iterate_values(line, "position", f"{args.software_name}->{args.path_name}")
+    value = manager.iterate_values(line, "value", args.software_name)
+    positions = manager.iterate_values(line, "position", f"{args.software_name}->{value}")
+    if(positions == ""):
+        parser.error("The path specified does not exist")
     counter = 0
     comma_position = 0 #used to know where each position starts and end
     for i in positions:
@@ -53,7 +52,7 @@ def remove(args, parser):
         if(i < start or i > end):
             new_value += line[i]
     manager.update_setting("Path", new_value, "r")
-    print(f"{args.software_name} -> {args.path_name} removed succesfully!")
+    print(f"{args.software_name} -> {value} removed succesfully!")
 
 def show_system_info(args):
     print(f"Operating system: {easyConfig.os_name}\nUser: {easyConfig.user}")
@@ -92,10 +91,12 @@ def add(args, parser):
     #Validates if the name or path is alrady in the config file
     line = manager.iterate_settings("Path", "line")
     text_to_add = f"{args.software_name}->{args.path_name}"
-    entry_exists: str = manager.iterate_values(line, "search", text_to_add)
+    if(line == ""):
+        manager.update_setting("Path", text_to_add, "a")
+    else:
+        entry_exists = manager.iterate_values(line, "add", text_to_add)
 
-    if(entry_exists == "true"):
-        parser.error("The name or path has been added in the past")
+        if(entry_exists == "true"):
+            parser.error("The name or path has been added in the past")
 
-    manager.update_setting("Path", text_to_add, "a")
     print(f"{text_to_add} added")

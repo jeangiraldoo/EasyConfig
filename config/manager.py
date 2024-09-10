@@ -17,11 +17,15 @@ def iterate_values(line: str, action: str, arg) -> str:
     prov_name = values[0]
     prov_path = values[1]
 
+    line_lenght = 0
     accumulator = ""
     value = ""
-    line_lenght = len(line) - 1
+    if(line != ""):
+        line_lenght = len(line) - 1
     arg_lenght = len(arg)
     counter = 0
+
+
     for char in line:
         if(not(char == ",") and counter < line_lenght):
             accumulator += char
@@ -36,10 +40,12 @@ def iterate_values(line: str, action: str, arg) -> str:
 
         if(action == "list"):
             value += f"{value_name} -> {value_path}\n"
-        elif(action == "search"):
+        elif(action == "add"):
             if(value_name == prov_name or value_path == prov_path):
                 value = "true"
                 break
+            elif(counter == line_lenght):
+                update_setting("Path", arg, "a") 
         elif(action == "position" and (value_name == prov_name or value_path == prov_path)):
             start = counter - arg_lenght
             value = f"{start},{counter}"
@@ -162,5 +168,3 @@ def create_main_file():
     if(not(verify_path_exists(easyConfig.config_path))):
         open(easyConfig.config_path, "w")
         create_setting("Path")
-
-#print(iterate_values("jaja->C:baba, mama->C:Users, tara->C:Documents", "value", "jaja"))
