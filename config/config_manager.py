@@ -17,7 +17,6 @@ def iterate_setting_values(line: str, action: str, arg) -> str:
     prov_name = values[0]
     if(len(values) == 2):
         prov_path = values[1]
-
     line_lenght = 0
     accumulator = ""
     value = ""
@@ -41,12 +40,10 @@ def iterate_setting_values(line: str, action: str, arg) -> str:
 
         if(action == "list"):
             value += f"{value_name} -> {value_path}\n"
-        elif(action == "add"):
+        elif(action == "exists"):
             if(value_name == prov_name or value_path == prov_path):
                 value = "true"
                 break
-            elif(counter == line_lenght):
-                update_setting("Path", arg, "a") 
         elif(action == "position" and (value_name == prov_name or value_path == prov_path)):
             start = counter - arg_lenght
             value = f"{start},{counter}"
@@ -113,9 +110,22 @@ def update_setting(setting_name: str, modification: str, option):
 
     if(line == "" or option == "r"):
         modified_setting = f"{setting_name} = [{modification}]"
-    elif(option == "a"):
-        modified_setting = f"{setting_name} = [{line},{modification}]" 
     file_lines[setting_position] = modified_setting
+
+    file = open(easyConfig.config_path, "w")
+    for i in file_lines:
+        file.write(i)
+
+def add_path_value(modification):
+    file_lines = read_config()
+    setting_position = iterate_settings("Path", "position")
+    line = iterate_settings("Path", "line")
+    if(line == ""):
+        new_value = f"Path = [{modification}]"
+    else:
+        new_value = f"Path = [{line}, {modification}]"
+
+    file_lines[setting_position] = new_value
 
     file = open(easyConfig.config_path, "w")
     for i in file_lines:

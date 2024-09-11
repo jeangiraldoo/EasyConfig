@@ -29,7 +29,6 @@ def remove(args, parser):
         parser.error("The software name was not specified")
 
     line = config_manager.iterate_settings("Path", "line")
-    #exists = config_manager.iterate_setting_values(line, "search", f"{args.software_name}->{args.path_name}")
 
     total_characters = len(line)
     position_start = ""
@@ -92,11 +91,12 @@ def add(args, parser):
     line = config_manager.iterate_settings("Path", "line")
     text_to_add = f"{args.software_name}->{args.path_name}"
     if(line == ""):
-        config_manager.update_setting("Path", text_to_add, "a")
+        config_manager.add_path_value(text_to_add)
     else:
-        entry_exists = config_manager.iterate_setting_values(line, "add", text_to_add)
-
+        entry_exists = config_manager.iterate_setting_values(line, "exists", text_to_add)
+        print(f"e: {entry_exists}")
         if(entry_exists == "true"):
             parser.error("The name or path has been added in the past")
 
+    config_manager.add_path_value(text_to_add)
     print(f"{text_to_add} added")
