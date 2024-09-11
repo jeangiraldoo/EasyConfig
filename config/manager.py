@@ -15,7 +15,8 @@ def iterate_setting_values(line: str, action: str, arg) -> str:
     """
     values = get_pairs(arg)
     prov_name = values[0]
-    prov_path = values[1]
+    if(len(values) == 2):
+        prov_path = values[1]
 
     line_lenght = 0
     accumulator = ""
@@ -60,20 +61,9 @@ def iterate_setting_values(line: str, action: str, arg) -> str:
 
 def get_pairs(value):
     separator = "->"
-    separator_pos_start = value.find(separator)
-    if(separator_pos_start == -1):
-        return [value, ""]
-
-    separator_pos_end = separator_pos_start + len(separator)
-    prov_name = value[:separator_pos_start]
-    prov_path = value[separator_pos_end:]
-    counter = 1
-    for i in prov_name:
-        if(i == " "):
-            prov_name = prov_name[counter:]
-        counter += 1
-    return [prov_name, prov_path]
-
+    value = value.replace(" ", "")
+    pair = value.split(separator)
+    return pair
 
 def iterate_settings(setting_name: str, option: str):
     """Returns either the line number where a setting is located in the configuration file or the values the setting contains
