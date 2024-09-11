@@ -14,7 +14,7 @@ def install(args, parser):
         app_path = easyConfig.default_paths[args.app_name]
     except KeyError:
         line = manager.iterate_settings("Path", "line")
-        value = manager.iterate_values(line, "value", f"{args.app_name}")
+        value = manager.iterate_setting_values(line, "value", f"{args.app_name}")
         if(value == ""):
             parser.error("The specified app is not in the default paths and has not been added to the path list")
 
@@ -29,13 +29,13 @@ def remove(args, parser):
         parser.error("The software name was not specified")
 
     line = manager.iterate_settings("Path", "line")
-    #exists = manager.iterate_values(line, "search", f"{args.software_name}->{args.path_name}")
+    #exists = manager.iterate_setting_values(line, "search", f"{args.software_name}->{args.path_name}")
 
     total_characters = len(line)
     position_start = ""
     position_end = ""
-    value = manager.iterate_values(line, "value", args.software_name)
-    positions = manager.iterate_values(line, "position", f"{args.software_name}->{value}")
+    value = manager.iterate_setting_values(line, "value", args.software_name)
+    positions = manager.iterate_setting_values(line, "position", f"{args.software_name}->{value}")
     if(positions == ""):
         parser.error("The path specified does not exist")
     counter = 0
@@ -65,7 +65,7 @@ def list_(args):
         line = manager.iterate_settings("Path", "line")
         line_lenght = len(line)
         string_to_print = ""
-        list_value = manager.iterate_values(line, "list", "")
+        list_value = manager.iterate_setting_values(line, "list", "")
         if(list_value == ""):
             print("There's no user-defined paths in the configuration file.\nUse the 'add' command with the '-p' flag to create one, or use the built-in default paths.")
         else:
@@ -94,7 +94,7 @@ def add(args, parser):
     if(line == ""):
         manager.update_setting("Path", text_to_add, "a")
     else:
-        entry_exists = manager.iterate_values(line, "add", text_to_add)
+        entry_exists = manager.iterate_setting_values(line, "add", text_to_add)
 
         if(entry_exists == "true"):
             parser.error("The name or path has been added in the past")

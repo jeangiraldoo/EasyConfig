@@ -1,7 +1,7 @@
 import os
 from app_data import easyConfig
 
-def iterate_values(line: str, action: str, arg) -> str:
+def iterate_setting_values(line: str, action: str, arg) -> str:
     """Iterate through a setting's values (a line) and returns a value based on the provided action
 
     Parameters
@@ -13,7 +13,7 @@ def iterate_values(line: str, action: str, arg) -> str:
     -------
     str: The return value will always be string, it's content will depend on what string was used for the action parameter
     """
-    values = get_line_section_values(arg)
+    values = get_pairs(arg)
     prov_name = values[0]
     prov_path = values[1]
 
@@ -34,7 +34,7 @@ def iterate_values(line: str, action: str, arg) -> str:
         elif(counter == line_lenght):
             accumulator += char
         
-        values_found = get_line_section_values(accumulator)
+        values_found = get_pairs(accumulator)
         value_name = values_found[0]
         value_path = values_found[1]
 
@@ -58,7 +58,7 @@ def iterate_values(line: str, action: str, arg) -> str:
     return value
     
 
-def get_line_section_values(value):
+def get_pairs(value):
     separator = "->"
     separator_pos_start = value.find(separator)
     if(separator_pos_start == -1):
@@ -84,7 +84,7 @@ def iterate_settings(setting_name: str, option: str):
     """
 
     setting_lenght = len(setting_name) + 4 #4 is the amount of characters in " = ["
-    file_lines: list[str] = read_main_file()
+    file_lines: list[str] = read_config()
     accumulator = ""
     line_number = 0
     setting_found = False
@@ -117,7 +117,7 @@ def update_setting(setting_name: str, modification: str, option):
     modification(str): Modification to be applied to the setting
     option(str): Determines what procedure will be used to apply the modification to the existing setting
     """
-    file_lines = read_main_file()
+    file_lines = read_config()
     setting_position = iterate_settings(setting_name, "position")
     line = iterate_settings(setting_name, "line")
 
@@ -131,13 +131,13 @@ def update_setting(setting_name: str, modification: str, option):
     for i in file_lines:
         file.write(i)
 
-def create_setting(setting_name: str):
+def add_setting(setting_name: str):
     """Create a setting that will be stored in the configuration file
 
     Parameters:
     setting_name(str): This name will be added to the configuration file in the last line as 'setting_name = []'
     """
-    file_lines = read_main_file()
+    file_lines = read_config()
     total_lines = len(file_lines)
     setting_to_add = f"{setting_name} = []"
     file_lines.append(setting_to_add)
@@ -151,7 +151,7 @@ def verify_path_exists(path) -> bool:
         return True 
     return False
 
-def read_main_file() -> list[str]:
+def read_config() -> list[str]:
     """Read and return the content stored in the local configuration file
 
     Returns:
@@ -161,10 +161,10 @@ def read_main_file() -> list[str]:
     file_lines = file.readlines()
     return file_lines
 
-def create_main_file():
+def create_config():
     """Create the configuration file that easyConfig will use"""
     if(not(verify_path_exists(easyConfig.config_directory))):
         os.makedirs(easyConfig.config_directory) 
     if(not(verify_path_exists(easyConfig.config_path))):
         open(easyConfig.config_path, "w")
-        create_setting("Path")
+        add_setting("Path")
