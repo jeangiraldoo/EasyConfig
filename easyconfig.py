@@ -1,8 +1,8 @@
 from argparse import ArgumentParser
 from commands import commands
-from config import manager
+from config import config_manager
 
-manager.create_config()
+config_manager.create_config()
 
 parser = ArgumentParser(prog = "EasyConfig", description = "Automates the process of managing and installing configuration files")
 parser.add_argument("-v", action = "store_true", help = "show the app version", default = False)
