@@ -23,6 +23,7 @@ def install(args, parser):
 
 def remove(args, parser):
     """Remove a chosen item from the configuration file"""
+
     if(args.p and args.software_name == "false"):
         parser.error("The path and the software name were not specified")
     elif(args.p and args.software_name == "false"):
@@ -31,26 +32,18 @@ def remove(args, parser):
     line = config_manager.iterate_settings("Path", "line")
 
     total_characters = len(line)
-    position_start = ""
-    position_end = ""
     value = config_manager.iterate_setting_values(line, "value", args.software_name)
     positions = config_manager.iterate_setting_values(line, "position", f"{args.software_name}->{value}")
     if(positions == ""):
         parser.error("The path specified does not exist")
-    counter = 0
-    comma_position = 0 #used to know where each position starts and end
-    for i in positions:
-        if(i == ","):
-            comma_position = counter 
-        counter += 1
 
-    start = int(positions[:comma_position])
-    end = int(positions[comma_position + 1:])
+    start = positions[0]
+    end = positions[1]
     new_value = ""
     for i in range(total_characters):
         if(i < start or i > end):
             new_value += line[i]
-    config_manager.update_setting("Path", new_value, "r")
+    config_manager.remove_path_value(new_value)
     print(f"{args.software_name} -> {value} removed succesfully!")
 
 def show_system_info(args):
@@ -94,9 +87,7 @@ def add(args, parser):
         config_manager.add_path_value(text_to_add)
     else:
         entry_exists = config_manager.iterate_setting_values(line, "exists", text_to_add)
-        print(f"e: {entry_exists}")
         if(entry_exists == "true"):
             parser.error("The name or path has been added in the past")
-
-    config_manager.add_path_value(text_to_add)
+        config_manager.add_path_value(text_to_add)
     print(f"{text_to_add} added")

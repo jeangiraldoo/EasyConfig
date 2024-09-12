@@ -25,7 +25,6 @@ def iterate_setting_values(line: str, action: str, arg) -> str:
     arg_lenght = len(arg)
     counter = 0
 
-
     for char in line:
         if(not(char == ",") and counter < line_lenght):
             accumulator += char
@@ -46,7 +45,7 @@ def iterate_setting_values(line: str, action: str, arg) -> str:
                 break
         elif(action == "position" and (value_name == prov_name or value_path == prov_path)):
             start = counter - arg_lenght
-            value = f"{start},{counter}"
+            value = [start,counter]
             break
         elif(action == "value" and prov_name == value_name):
             value = value_path
@@ -96,20 +95,21 @@ def iterate_settings(setting_name: str, option: str):
         line_value = line[setting_lenght:(line_lenght - 1)]
         return line_value
 
-def update_setting(setting_name: str, modification: str, option):
+def remove_path_value(modification: str):
     """Modify an existing setting within the configuration file
 
     Parameters: 
-    setting_name(str): Name of the setting to modify
-    modification(str): Modification to be applied to the setting
-    option(str): Determines what procedure will be used to apply the modification to the existing setting
+    modification(str): Modification to be applied to the paths
     """
+    
     file_lines = read_config()
-    setting_position = iterate_settings(setting_name, "position")
-    line = iterate_settings(setting_name, "line")
+    setting_position = iterate_settings("Path", "position")
+    line = iterate_settings("Path", "line")
 
-    if(line == "" or option == "r"):
-        modified_setting = f"{setting_name} = [{modification}]"
+    if(modification[0] == " "):
+        modification = modification.replace(" ", "", 1)
+
+    modified_setting = f"Path = [{modification}]"
     file_lines[setting_position] = modified_setting
 
     file = open(easyConfig.config_path, "w")
