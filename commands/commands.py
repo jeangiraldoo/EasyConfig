@@ -81,13 +81,11 @@ def add(args, parser):
             parser.error(f"This name is already in use in the default paths ({item} -> {default_paths[item]})")
     
     #Validates if the name or path is alrady in the config file
-    line = config_manager.iterate_settings("Path", "line")
-    text_to_add = f"{args.software_name}->{args.path_name}"
-    if(line == ""):
-        config_manager.add_path_value(text_to_add)
+    easyConfig.config_parser.read(easyConfig.config_path)
+    if(args.software_name in easyConfig.config_parser["Path"]):
+        parser.error("The app name has been added in the past")
     else:
-        entry_exists = config_manager.iterate_setting_values(line, "exists", text_to_add)
-        if(entry_exists == "true"):
-            parser.error("The name or path has been added in the past")
-        config_manager.add_path_value(text_to_add)
-    print(f"{text_to_add} added")
+        for key in easyConfig.config_parser["Path"]:
+            if(easyConfig.config_parser["Path"][key] == args.path_name):
+                parser.error("The path name has been added in the past")
+    config_manager.add_path_value(args.software_name, args.path_name)

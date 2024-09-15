@@ -1,4 +1,5 @@
 import os
+import configparser
 from app_data import easyConfig
 
 def iterate_setting_values(line: str, action: str, arg) -> str:
@@ -116,20 +117,12 @@ def remove_path_value(modification: str):
     for i in file_lines:
         file.write(i)
 
-def add_path_value(modification):
-    file_lines = read_config()
-    setting_position = iterate_settings("Path", "position")
-    line = iterate_settings("Path", "line")
-    if(line == ""):
-        new_value = f"Path = [{modification}]"
-    else:
-        new_value = f"Path = [{line}, {modification}]"
-
-    file_lines[setting_position] = new_value
-
+def add_path_value(app_name, app_path):
+    easyConfig.config_parser.read(easyConfig.config_path)
+    easyConfig.config_parser["Path"][app_name] = app_path
+            
     file = open(easyConfig.config_path, "w")
-    for i in file_lines:
-        file.write(i)
+    easyConfig.config_parser.write(file)
 
 def add_setting(setting_name: str):
     """Create a setting that will be stored in the configuration file
@@ -137,14 +130,10 @@ def add_setting(setting_name: str):
     Parameters:
     setting_name(str): This name will be added to the configuration file in the last line as 'setting_name = []'
     """
-    file_lines = read_config()
-    total_lines = len(file_lines)
-    setting_to_add = f"{setting_name} = []"
-    file_lines.append(setting_to_add)
-
+    easyConfig.config_parser[setting_name] = {}
     file = open(easyConfig.config_path, "w")
-    for i in file_lines:
-        file.write(i)
+    easyConfig.config_parser.write(file)
+
 
 def verify_path_exists(path) -> bool:
     if(os.path.exists(path)):
@@ -157,9 +146,12 @@ def read_config() -> list[str]:
     Returns:
     list of str: Each element of the list is a line in the configuration file
     """
+    """
     file = open(easyConfig.config_path, "r")
     file_lines = file.readlines()
     return file_lines
+    """
+    easyConfig.config_parser.read(easyConfig.config_path)
 
 def create_config():
     """Create the configuration file that easyConfig will use"""
@@ -168,3 +160,4 @@ def create_config():
     if(not(verify_path_exists(easyConfig.config_path))):
         open(easyConfig.config_path, "w")
         add_setting("Path")
+

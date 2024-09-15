@@ -1,9 +1,11 @@
 import os
 import platform
+import configparser
 
 class easyConfig:
+    config_parser = configparser.ConfigParser()
     version = "0.5.3"
-    config_name = "config.ec"
+    config_name = "config.ini"
 
     def __init__(self):
         operative_system = platform.system()
