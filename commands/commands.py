@@ -13,13 +13,13 @@ def install(args, parser):
     try:
         app_path = easyConfig.default_paths[args.app_name]
     except KeyError:
-        line = config_manager.iterate_settings("Path", "line")
-        value = config_manager.iterate_setting_values(line, "value", f"{args.app_name}")
-        if(value == ""):
+        easyConfig.config_parser.read(easyConfig.config_path)
+        if(not(args.app_name in easyConfig.config_parser["Path"])):
             parser.error("The specified app is not in the default paths and has not been added to the path list")
 
-    os.system(f"move {args.file_name} {value}")
-    print(f"{args.file_name} moved to {value}")
+    path = easyConfig.config_parser["Path"][args.app_name]
+    os.system(f"move {args.file_name} {path}")
+    print(f"{args.file_name} moved to {path}")
 
 def remove(args, parser):
     """Remove a chosen item from the configuration file"""
@@ -29,39 +29,23 @@ def remove(args, parser):
     elif(args.p and args.software_name == "false"):
         parser.error("The software name was not specified")
 
-    line = config_manager.iterate_settings("Path", "line")
-
-    total_characters = len(line)
-    value = config_manager.iterate_setting_values(line, "value", args.software_name)
-    positions = config_manager.iterate_setting_values(line, "position", f"{args.software_name}->{value}")
-    if(positions == ""):
-        parser.error("The path specified does not exist")
-
-    start = positions[0]
-    end = positions[1]
-    new_value = ""
-    for i in range(total_characters):
-        if(i < start or i > end):
-            new_value += line[i]
-    config_manager.remove_path_value(new_value)
-    print(f"{args.software_name} -> {value} removed succesfully!")
+    easyConfig.config_parser.read(easyConfig.config_path)
+    if(not(args.software_name in easyConfig.config_parser["Path"])):
+        parser.error("There's no app in the paths with that name")
+    else:
+        config_manager.remove_path_value(args.software_name)
 
 def show_system_info(args):
     print(f"Operating system: {easyConfig.os_name}\nUser: {easyConfig.user}")
 
 def list_(args):
-    """List the paths that are in the "Path" setting in the configuration file"""
-    if(args.d):
-        print(easyConfig.get_default_paths())
+    easyConfig.config_parser.read(easyConfig.config_path)
+    if(len(easyConfig.config_parser["Path"]) == 0):
+        print("There's no user-defined paths in the configuration file. \nUse the 'add' command with the '-p' flag to create one, or use the built-in default paths")
     else:
-        line = config_manager.iterate_settings("Path", "line")
-        line_lenght = len(line)
-        string_to_print = ""
-        list_value = config_manager.iterate_setting_values(line, "list", "")
-        if(list_value == ""):
-            print("There's no user-defined paths in the configuration file.\nUse the 'add' command with the '-p' flag to create one, or use the built-in default paths.")
-        else:
-            print(f"List of added paths:\n{list_value}")
+        print("List of added paths:")
+        for key in easyConfig.config_parser["Path"]:
+            print(f"{key} -> {easyConfig.config_parser['Path'][key]}")
 
 def add(args, parser):
     """Add a software_name/path pair to the "Path" setting in the configuration file"""
